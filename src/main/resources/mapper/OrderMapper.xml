@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tencent.wxcloudrun.dao.OrderMapper">
+
+    <resultMap id="orderMapper" type="com.tencent.wxcloudrun.model.Order">
+        <id property="id" column="id"/>
+        <result property="customerID" column="customerID"/>
+        <result property="customerName" column="customerName"/>
+        <result property="orderCount" column="orderCount"/>
+        <result property="orderType" column="orderType"/>
+        <result property="transportType" column="transportType"/>
+        <result property="address" column="address"/>
+        <result property="phone" column="phone"/>
+        <result property="isValid" column="isValid"/>
+        <result property="createdAt" column="createdAt" javaType="java.time.LocalDateTime" />
+        <result property="updatedAt" column="updatedAt" javaType="java.time.LocalDateTime"  />
+    </resultMap>
+
+<!--    <resultMap id="ordersMapper" type="java.util.List">-->
+<!--        <id property="id" column="id"/>-->
+<!--        <result property="count" column="count"/>-->
+<!--        <result property="createdAt" column="createdAt" javaType="java.time.LocalDateTime" />-->
+<!--        <result property="updatedAt" column="updatedAt" javaType="java.time.LocalDateTime"  />-->
+<!--    </resultMap>-->
+
+<!--    INSERT INTO-->
+<!--    `Orders`( `id`, `customerID`, `customerName`, `orderCount`, `orderType`, `transportType`, `address`, `phone`, `isValid`-->
+<!--    ) VALUE( 0, "wwwww", "customerName", 2, 2, 2, "北京", "17316290739", true-->
+<!--    ) ON DUPLICATE KEY-->
+<!--    UPDATE-->
+<!--    customerID = "ggggg",-->
+<!--    customerName = "customerName",-->
+<!--    orderCount = 1,-->
+<!--    orderType = 1,-->
+<!--    transportType = 1,-->
+<!--    address = "北京",-->
+<!--    phone = "17316290739",-->
+<!--    isValid = false-->
+    <update id="insertOrUpsertOrder" parameterType="com.tencent.wxcloudrun.model.Order">
+        INSERT INTO `Orders`(`id`, `customerID`, `customerName`, `orderCount`, `orderType`, `transportType`, `address`, `phone`, `isValid`)
+        VALUE(#{id}, #{customerID}, #{customerName}, #{orderCount}, #{orderType}, #{transportType}, #{address}, #{phone}, #{isValid})
+        ON DUPLICATE KEY UPDATE customerID=#{customerID}, customerName=#{customerName}, orderCount=#{orderCount}, orderType=#{orderType}, transportType=#{transportType}, address=#{address}, phone=#{phone}, isValid=#{isValid}
+    </update>
+
+    <select id="getOrder" resultMap="orderMapper" parameterType="java.lang.Integer">
+        SELECT *
+        FROM Orders
+        WHERE id = #{id}
+    </select>
+
+    <select id="getValidOrders" resultMap="orderMapper">
+        SELECT *
+        FROM Orders
+        WHERE isValid = 1
+    </select>
+
+    <delete id="deleteOrder" parameterType="java.lang.Integer">
+        DELETE
+        FROM Orders
+        where id = #{id}
+        limit 1
+    </delete>
+
+</mapper>
